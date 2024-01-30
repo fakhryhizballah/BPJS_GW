@@ -6,4 +6,4 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/rest', 'Rest::index');
+$routes->get('/api/bpjs/', 'Rest::index');
