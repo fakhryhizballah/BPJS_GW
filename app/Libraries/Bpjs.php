@@ -7,11 +7,11 @@ class Bpjs
     public function  getSingnature()
     {
         // timestamp
-        $secretKey = "6cIB625933";
-        $X_cons_id = "13921";
-        $user_key = "e623fd2f481f216df5551c2b23ee0a0b";
-        $baseURL = "https://apijkn.bpjs-kesehatan.go.id/antreanrs";
-        $vclaimURL = "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest";
+        $secretKey = $_ENV['BPJS.secretKey'];
+        $X_cons_id = $_ENV['BPJS.X_cons_id'];
+        $user_key = $_ENV['BPJS.user_key'];
+        $baseURL = $_ENV['BPJS.baseURL'];
+        $vclaimURL = $_ENV['BPJS.vclaimURL'];
         date_default_timezone_set('UTC');
         $tStamp = strval(time() - strtotime('1970-01-01 00:00:00'));
         $signature = hash_hmac('sha256', $X_cons_id . "&" . $tStamp, $secretKey, true);
