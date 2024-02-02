@@ -10,19 +10,20 @@ use App\Libraries\Bpjs;
 
 class Rest extends ResourceController
 {
+    protected $format    = 'json';
+    
     public function __construct()
     {
         $this->Bpjs = new Bpjs();
+        $this->client = new \GuzzleHttp\Client();
     }
 
     public function index()
     {
-        // get params request
-        $request = \Config\Services::request();
-        $tanggal = $request->getVar('tanggal');
-        $pelayanan = $request->getVar('pelayanan');
-        $status = $request->getVar('status');
-        $client = new \GuzzleHttp\Client();
+        $tanggal = $this->request->getVar('tanggal');
+        $pelayanan = $this->request->getVar('pelayanan');
+        $status =  $this->request->getVar('status');
+        
         $data = $this->Bpjs->getSingnature();
         $headers = [
             'x-cons-id' => $data['X_cons_id'],
@@ -31,22 +32,21 @@ class Rest extends ResourceController
             'user_key' => $data['user_key']
         ];
         $request =  new Request('GET', $data['vclaimURL'] . '/Monitoring/Klaim/Tanggal/' . $tanggal . '/JnsPelayanan/' . $pelayanan . '/Status/' . $status, $headers);
-        $res = $client->sendAsync($request)->wait();
+        $res = $this->client->sendAsync($request)->wait();
         $res = json_decode($res->getBody()->getContents());
-        // echo $res->response;
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
         $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
         $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
         $hasil = $this->Bpjs->decompress($hasil);
-        // retunt nik;
-        $hasil = json_decode($hasil);
-        echo json_encode($hasil);
-        //dd($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
     }
-    public function sep()
+    public function cekSep()
     {
-        $client = new \GuzzleHttp\Client();
         $data = $this->Bpjs->getSingnature();
-        $noSEP = '1510R0010823V006423';
+        $noSEP = $this->request->getVar('noSEP');
         $headers = [
             'x-cons-id' => $data['X_cons_id'],
             'x-timestamp' =>  $data['timestamp'],
@@ -54,14 +54,15 @@ class Rest extends ResourceController
             'user_key' => $data['user_key']
         ];
         $request =  new Request('GET', $data['vclaimURL'] . '/SEP/' . $noSEP, $headers);
-        $res = $client->sendAsync($request)->wait();
+        $res = $this->client->sendAsync($request)->wait();
         $res = json_decode($res->getBody()->getContents());
-        // echo $res->response;
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
         $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
         $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
         $hasil = $this->Bpjs->decompress($hasil);
-        // retunt nik;
-        $hasil = json_decode($hasil);
-        dd($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
     }
 }
