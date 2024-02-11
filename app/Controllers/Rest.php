@@ -78,14 +78,14 @@ class Rest extends ResourceController
             $res = $this->client->sendAsync($request)->wait();
             $res = json_decode($res->getBody()->getContents());
             if ($res->metaData->code != "200") {
-                return $this->respond($res);
+                continue;
+            } else {
+                $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+                $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+                $hasil = $this->Bpjs->decompress($hasil);
+                $res->response = json_decode($hasil);
+                $x = array_merge($x, $res->response->klaim);
             }
-            $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
-            $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
-            $hasil = $this->Bpjs->decompress($hasil);
-            $res->response = json_decode($hasil);
-
-            $x = array_merge($x, $res->response->klaim);
         }
         $hasil = [
             "status" => true,
