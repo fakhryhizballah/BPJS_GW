@@ -12,6 +12,8 @@ class Bpjs
         $user_key = $_ENV['BPJS.user_key'];
         $baseURL = $_ENV['BPJS.baseURL'];
         $vclaimURL = $_ENV['BPJS.vclaimURL'];
+        $url = $_ENV['BPJS.URL'];
+        $ppk = $_ENV['BPJS.kodeppk'];
         date_default_timezone_set('UTC');
         $tStamp = strval(time() - strtotime('1970-01-01 00:00:00'));
         $signature = hash_hmac('sha256', $X_cons_id . "&" . $tStamp, $secretKey, true);
@@ -26,7 +28,9 @@ class Bpjs
             'X_cons_id' => $X_cons_id,
             'user_key' => $user_key,
             'baseURL' => $baseURL,
-            'vclaimURL' => $vclaimURL
+            'vclaimURL' => $vclaimURL,
+            'URL' => $url,
+            'ppk' => $ppk
         );
         return $data;
     }

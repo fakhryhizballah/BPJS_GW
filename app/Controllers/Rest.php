@@ -88,10 +88,14 @@ class Rest extends ResourceController
             }
         }
         $hasil = [
-            "status" => true,
-            "message" => "Monitoring Data Klaim",
+            "metaData" => [
+                "code" => "200",
+                "message" => true
+            ],
+            "response" => [
             "record" => count($x),
             "data" => $x,
+            ]
         ];
         return $this->respond($hasil);
     }
@@ -115,6 +119,101 @@ class Rest extends ResourceController
         $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
         $hasil = $this->Bpjs->decompress($hasil);
         $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
+    public function getPesertaByNik()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $nik = $this->request->getVar('nik');
+        $tglSEP = $this->request->getVar('tglSEP');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key']
+        ];
+        $request =  new Request('GET', $data['vclaimURL'] . '/Peserta/nik/' . $nik . '/tglSEP/' . $tglSEP, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
+        $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+        $hasil = $this->Bpjs->decompress($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
+    public function getRujukan()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $noKartu = $this->request->getVar('noKartu');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key']
+        ];
+        $request =  new Request('GET', $data['vclaimURL'] . '/Rujukan/List/Peserta/' . $noKartu, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
+        $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+        $hasil = $this->Bpjs->decompress($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
+    public function getKamar()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $start = $this->request->getVar('start');
+        $limit = $this->request->getVar('limit');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key']
+        ];
+        $request =  new Request('GET', $data['URL'] . 'aplicaresws/rest/bed/read/' . $data['ppk'] . '/' . $start . '/' . $limit, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        return $this->respond($res);
+    }
+    public function updateKamar()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $kelas = $this->request->getBody();
+        $kelas = json_decode($kelas);
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('POST', $data['URL'] . 'aplicaresws/rest/bed/update/' . $data['ppk'], $headers, json_encode($kelas));
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        return $this->respond($res);
+    }
+    public function delKamar()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $kelas = $this->request->getBody();
+        $kelas = json_decode($kelas);
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('POST', $data['URL'] . 'aplicaresws/rest/bed/delete/' . $data['ppk'], $headers, json_encode($kelas));
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
         return $this->respond($res);
     }
 }
