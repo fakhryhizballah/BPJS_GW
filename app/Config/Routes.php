@@ -7,7 +7,8 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('/api/bpjs/monitoring', 'Rest::index');
-$routes->get('/api/bpjs/monit', 'Rest::monit');
+$routes->get('/api/bpjs/monitoring/klaim', 'Rest::monit');
+$routes->get('/api/bpjs/monitoring/kunjungan', 'Rest::kunjungan');
 $routes->get('/api/bpjs/sep', 'Rest::cekSep');
 $routes->get('/api/bpjs/peserta/nik', 'Rest::getPesertaByNik');
 $routes->get('/api/bpjs/peserta/rujukan', 'Rest::getRujukan');
