@@ -21,4 +21,5 @@ $routes->post('/api/bpjs/deletkamar', 'Rest::delKamar');
 
 $routes->post('/api/bpjs/antrean/add', 'Rest::addAntrean');
 $routes->get('/api/bpjs/antrean/pendaftaran', 'Rest::getAntrean');
+$routes->get('/api/bpjs/antrean/jadwaldokter', 'Rest::getJadwalDokter');
 
