@@ -271,4 +271,42 @@ class Rest extends ResourceController
         $res = json_decode($res->getBody()->getContents());
         return $this->respond($res);
     }
+
+    public function addAntrean()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $kelas = $this->request->getBody();
+        $kelas = json_decode($kelas);
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('POST', $data['URL'] . 'antreanrs_dev/rest/bed/delete/' . $data['ppk'], $headers, json_encode($kelas));
+    }
+    public function getAntrean()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $tanggal = $this->request->getVar('tanggal');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('GET', $data['URL'] . 'antreanrs/antrean/pendaftaran/tanggal/' . $tanggal, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        if ($res->metadata->code != "200") {
+            return $this->respond($res);
+        }
+        $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+        $hasil = $this->Bpjs->decompress($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
 }

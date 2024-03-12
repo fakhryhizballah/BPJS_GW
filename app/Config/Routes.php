@@ -17,3 +17,6 @@ $routes->get('/api/bpjs/kamar', 'Rest::getKamar');
 $routes->post('/api/bpjs/updatekamar', 'Rest::updateKamar');
 $routes->post('/api/bpjs/deletkamar', 'Rest::delKamar');
 
+$routes->post('/api/bpjs/antrean/add', 'Rest::addAntrean');
+$routes->get('/api/bpjs/antrean/pendaftaran', 'Rest::getAntrean');
+
