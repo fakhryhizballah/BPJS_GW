@@ -199,6 +199,29 @@ class Rest extends ResourceController
         $res->response = json_decode($hasil);
         return $this->respond($res);
     }
+    public function getPesertaByNokartu()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $nik = $this->request->getVar('nik');
+        $tglSEP = $this->request->getVar('tglSEP');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key']
+        ];
+        $request =  new Request('GET', $data['vclaimURL'] . '/Peserta/nokartu/' . $nik . '/tglSEP/' . $tglSEP, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
+        $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+        $hasil = $this->Bpjs->decompress($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
     public function getRujukan()
     {
         $data = $this->Bpjs->getSingnature();
