@@ -335,6 +335,59 @@ class Rest extends ResourceController
         $res->response = json_decode($hasil);
         return $this->respond($res);
     }
+    public function getAntreanby()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $tanggal = $this->request->getVar('tanggal');
+
+        $from = $this->request->getGet('from');
+        $until = $this->request->getGet('until');
+
+        $dateList = [];
+
+        // Convert the string dates to DateTime objects
+        $fromDate = \DateTime::createFromFormat('Y-m-d', $from);
+        $untilDate = \DateTime::createFromFormat('Y-m-d', $until);
+
+        // Generate the date list
+        while ($fromDate <= $untilDate) {
+            $dateList[] = $fromDate->format('Y-m-d');
+            $fromDate->modify('+1 day');
+        }
+        $x = [];
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        foreach ($dateList as $tanggal) {
+            $request =  new Request('GET', $data['vclaimURL'] . '/antrean/pendaftaran/tanggal/' . $tanggal, $headers);
+            $res = $this->client->sendAsync($request)->wait();
+            $res = json_decode($res->getBody()->getContents());
+            if ($res->metadata->code != "200") {
+                continue;
+            } else {
+                $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+                $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+                $hasil = $this->Bpjs->decompress($hasil);
+                $res->response = json_decode($hasil);
+                $x = array_merge($x, $res->response->klaim);
+            }
+        }
+        $hasil = [
+            "metaData" => [
+                "code" => "200",
+                "message" => true
+            ],
+            "response" => [
+                "record" => count($x),
+                "data" => $x,
+            ]
+        ];
+        return $this->respond($hasil);
+    }
     public function getJadwalDokter()
     {
         $data = $this->Bpjs->getSingnature();
