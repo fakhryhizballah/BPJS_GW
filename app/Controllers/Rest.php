@@ -338,8 +338,6 @@ class Rest extends ResourceController
     public function getAntreanby()
     {
         $data = $this->Bpjs->getSingnature();
-        $tanggal = $this->request->getVar('tanggal');
-
         $from = $this->request->getGet('from');
         $until = $this->request->getGet('until');
 
@@ -363,7 +361,7 @@ class Rest extends ResourceController
             'Content-Type' => 'application/json'
         ];
         foreach ($dateList as $tanggal) {
-            $request =  new Request('GET', $data['vclaimURL'] . '/antrean/pendaftaran/tanggal/' . $tanggal, $headers);
+            $request =  new Request('GET', $data['baseURL'] . '/antrean/pendaftaran/tanggal/' . $tanggal, $headers);
             $res = $this->client->sendAsync($request)->wait();
             $res = json_decode($res->getBody()->getContents());
             if ($res->metadata->code != "200") {
@@ -373,7 +371,8 @@ class Rest extends ResourceController
                 $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
                 $hasil = $this->Bpjs->decompress($hasil);
                 $res->response = json_decode($hasil);
-                $x = array_merge($x, $res->response->klaim);
+
+                $x = array_merge($x, $res->response);
             }
         }
         $hasil = [
