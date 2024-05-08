@@ -30,3 +30,4 @@ $routes->get('/api/bpjs/antrean/refdokter', 'Rest::getRefDokter');
 $routes->get('/api/bpjs/antrean/refpoli', 'Rest::getRefPoli');
 $routes->get('/api/bpjs/antrean/signatuer', 'Rest::signatuer');
 
+$routes->post('/api/bpjs/icare/validate', 'Rest::icare');
