@@ -15,6 +15,9 @@ $routes->get('/api/bpjs/peserta/nik', 'Rest::getPesertaByNik');
 $routes->get('/api/bpjs/peserta/nokartu', 'Rest::getPesertaByNokartu');
 $routes->get('/api/bpjs/peserta/rujukan', 'Rest::getRujukan');
 $routes->get('/api/bpjs/peserta/jumlahsep', 'Rest::getJumlahSEP');
+$routes->get('/api/bpjs/peserta/listrencanakontrol', 'Rest::ListRencanaKontrol');
+
+
 
 $routes->get('/api/bpjs/kamar', 'Rest::getKamar');
 $routes->post('/api/bpjs/updatekamar', 'Rest::updateKamar');
