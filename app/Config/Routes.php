@@ -22,6 +22,8 @@ $routes->get('/api/bpjs/peserta/listrencanakontrol', 'Rest::ListRencanaKontrol')
 $routes->get('/api/bpjs/kamar', 'Rest::getKamar');
 $routes->post('/api/bpjs/updatekamar', 'Rest::updateKamar');
 $routes->post('/api/bpjs/deletkamar', 'Rest::delKamar');
+$routes->post('/api/bpjs/addkamar', 'Rest::addKamar');
+$routes->get('/api/bpjs/refKamar', 'Rest::refKamar');
 
 
 $routes->post('/api/bpjs/antrean/add', 'Rest::addAntrean');

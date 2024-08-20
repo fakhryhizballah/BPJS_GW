@@ -342,6 +342,40 @@ class Rest extends ResourceController
         $res = json_decode($res->getBody()->getContents());
         return $this->respond($res);
     }
+    public function addKamar()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $kelas = $this->request->getBody();
+        $kelas = json_decode($kelas);
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('POST', $data['URL'] . 'aplicaresws/rest/bed/create/' . $data['ppk'], $headers, json_encode($kelas));
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        return $this->respond($res);
+    }
+    public function refKamar()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $kelas = $this->request->getBody();
+        $kelas = json_decode($kelas);
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('GET', $data['URL'] . 'aplicaresws/rest/ref/kelas', $headers, json_encode($kelas));
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        return $this->respond($res);
+    }
 
     public function addAntrean()
     {
