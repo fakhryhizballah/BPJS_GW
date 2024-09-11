@@ -695,7 +695,7 @@ class Rest extends ResourceController
         file_put_contents("klaim.pdf", $pdf);
         // atau untuk ditampilkan dengan perintah:
         header("Content-type:application/pdf");
-        header("Content-Disposition:attachment;filename='klaim.pdf'");
+        header("Content-Disposition:attachment;filename=" . $param['noSEP'] . ".pdf");
         echo $pdf;
         // return $this->respond($msg['data']);
     }
