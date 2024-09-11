@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use CodeIgniter\RESTful\ResourceController;
 use App\Libraries\Bpjs;
+use App\Libraries\Inacbg;
 use CodeIgniter\I18n\Time;
 
 
@@ -16,6 +17,7 @@ class Rest extends ResourceController
     public function __construct()
     {
         $this->Bpjs = new Bpjs();
+        $this->Inacbg = new Inacbg();
         $this->client = new \GuzzleHttp\Client();
     }
 
@@ -621,6 +623,17 @@ class Rest extends ResourceController
         $res->response = json_decode($hasil);
         return $this->respond($res);
     }
+    public function decript()
+    {
+        $body = $this->request->getBody();
+        $body = json_decode($body, true);
+
+        $key =  $body['x-cons-id'] . '6yY911188D' . $body['x-timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $body['response']);
+        $hasil = $this->Bpjs->decompress($hasil);
+        //  $res->response = json_decode($hasil);
+        return $this->respond($hasil);
+    }
     public function signatuer()
     {
         $data = $this->Bpjs->getSingnature();
@@ -629,8 +642,62 @@ class Rest extends ResourceController
             'x-timestamp' =>  $data['timestamp'],
             'x-signature' => $data['signature'],
             'user_key' => $data['user_key'],
+            'baseURL' => $data['baseURL'],
+            'vclaimURL' => $data['vclaimURL'],
             'Content-Type' => 'application/json'
         ];
         return $this->respond($headers);
     }
+    public function get_claim_data()
+    {
+        $param = $this->request->getGet();
+        $request = '{
+                        "metadata": {
+                            "method":"' . $param['method'] . '"
+                        },
+                        "data": {
+                            "nomor_sep":"' . $param['noSEP'] . '"
+                        }
+                   }';
+
+        $msg = $this->Inacbg->Request($request);
+        return $this->respond($msg);
+    }
+    public function get_claim_covid()
+    {
+        $param = $this->request->getGet();
+        $request = '{
+                        "metadata": {
+                            "method":"' . $param['method'] . '"
+                        },
+                        "data": {
+                            "nomor_sep":"' . $param['noSEP'] . '",
+                            "nomor_pengajuan": "' . $param['nomor_pengajuan'] . '"
+                        }
+                   }';
+        $msg = $this->Inacbg->Request($request);
+        return $this->respond($msg);
+    }
+    public function get_claim_pdf()
+    {
+        $param = $this->request->getGet();
+        $request = '{
+                        "metadata": {
+                            "method":"' . $param['method'] . '"
+                        },
+                        "data": {
+                            "nomor_sep":"' . $param['noSEP'] . '"
+                        }
+                   }';
+        $msg = $this->Inacbg->Request($request);
+        $pdf = base64_decode($msg["data"]);
+        // hasilnya adalah berupa binary string $pdf, untuk disimpan:
+        file_put_contents("klaim.pdf", $pdf);
+        // atau untuk ditampilkan dengan perintah:
+        header("Content-type:application/pdf");
+        header("Content-Disposition:attachment;filename='klaim.pdf'");
+        echo $pdf;
+        // return $this->respond($msg['data']);
+    }
+ 
 }

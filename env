@@ -145,8 +145,14 @@
 #--------------------------------------------------------------------
 # BPJS API RST
 #--------------------------------------------------------------------
-BPJS.secretKey = 
-BPJS.X_cons_id = 
+BPJS.secretKey =
+BPJS.X_cons_id =
 BPJS.user_key =
-BPJS.baseURL = "https://apijkn.bpjs-kesehatan.go.id/antreanrs";
-BPJS.vclaimURL = "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest";
+BPJS.baseURL = "https://apijkn.bpjs-kesehatan.go.id/antreanrs"
+BPJS.vclaimURL = "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest"
+
+#--------------------------------------------------------------------
+# INCBG RSUD
+#--------------------------------------------------------------------
+INCBG.keyRS = ""
+INCBG.UrlWS = ""

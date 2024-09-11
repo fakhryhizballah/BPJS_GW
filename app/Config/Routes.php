@@ -35,6 +35,12 @@ $routes->get('/api/bpjs/antrean/pendaftaranby', 'Rest::getAntreanby');
 $routes->get('/api/bpjs/antrean/jadwaldokter', 'Rest::getJadwalDokter');
 $routes->get('/api/bpjs/antrean/refdokter', 'Rest::getRefDokter');
 $routes->get('/api/bpjs/antrean/refpoli', 'Rest::getRefPoli');
+$routes->post('/api/bpjs/antrean/decript', 'Rest::decript');
 $routes->get('/api/bpjs/antrean/signatuer', 'Rest::signatuer');
 
 $routes->post('/api/bpjs/icare/validate', 'Rest::icare');
+
+$routes->get('/api/inacbg/get_claim_data', 'Rest::get_claim_data');
+
+$routes->get('/api/inacbg/get_claim_covid', 'Rest::get_claim_covid');
+$routes->get('/api/inacbg/get_claim_pdf', 'Rest::get_claim_pdf');
