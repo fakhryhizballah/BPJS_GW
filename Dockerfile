@@ -1,34 +1,14 @@
-# Menggunakan image PHP 8.1 dengan PHP-FPM
-FROM php:8.1-fpm
+# Menggunakan base image Nginx resmi dari Docker Hub
+FROM nginx:latest
 
-# Install dependencies tambahan
-RUN apt-get update && apt-get install -y \
-    nginx \
-    git \
-    unzip \
-    libzip-dev \
-    curl \
-    && docker-php-ext-install pdo pdo_mysql
+# Copy file konfigurasi Nginx dari host ke container
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copy source code ke dalam container
-WORKDIR /var/www/html
-COPY . .
-
-# Install dependencies CodeIgniter menggunakan Composer
-RUN composer install
-
-# Berikan izin untuk direktori writable CodeIgniter
-RUN chown -R www-data:www-data /var/www/html/writable \
-    && chmod -R 775 /var/www/html/writable
-
-# Copy konfigurasi Nginx ke dalam container
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+# Copy file statis (HTML, CSS, JS) ke dalam direktori Nginx default (/usr/share/nginx/html)
+COPY ./src /usr/share/nginx/html
 
 # Expose port 80 untuk HTTP
 EXPOSE 80
 
-# Script untuk menjalankan Nginx dan PHP-FPM secara bersamaan
-CMD ["/bin/bash", "-c", "service nginx start && php-fpm"]
+# Perintah default untuk menjalankan Nginx di foreground
+CMD ["nginx", "-g", "daemon off;"]
