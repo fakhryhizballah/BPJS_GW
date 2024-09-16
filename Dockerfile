@@ -2,7 +2,7 @@
 FROM nginx:latest
 
 # Copy file konfigurasi Nginx dari host ke container
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy file statis (HTML, CSS, JS) ke dalam direktori Nginx default (/usr/share/nginx/html)
 COPY ./src /usr/share/nginx/html
