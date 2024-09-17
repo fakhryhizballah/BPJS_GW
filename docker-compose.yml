@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   app:
     build: .
     volumes:
       - ./:/var/www/html
     ports:
-      - "8080:80"  # Map port 8080 di host ke port 80 di container
+      - "8080:80"
     networks:
       - app-network
     depends_on:
