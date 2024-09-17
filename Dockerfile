@@ -8,15 +8,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     libonig-dev \
+    libicu-dev \  
     curl \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip
-    # Install dependencies
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libonig-dev \
-    libicu-dev \  # Tambahkan library ICU yang diperlukan oleh ext-intl
-    curl \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip intl  # Install ext-intl
+    && docker-php-ext-install pdo pdo_mysql mbstring zip intl
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
