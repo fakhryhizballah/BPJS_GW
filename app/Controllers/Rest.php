@@ -294,6 +294,51 @@ class Rest extends ResourceController
         $res->response = json_decode($hasil);
         return $this->respond($res);
     }
+    public function getfinger()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $nokartu = $this->request->getVar('Nokartu');
+        $Tglpelayanan = $this->request->getVar('Tglpelayanan');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key']
+        ];
+        $request =  new Request('GET', $data['vclaimURL'] . '/SEP/FingerPrint/Peserta/' . $nokartu . '/TglPelayanan/' . $Tglpelayanan, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
+        $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+        $hasil = $this->Bpjs->decompress($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
+    public function getallfinger()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $Tglpelayanan = $this->request->getVar('Tglpelayanan');
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key']
+        ];
+        $request =  new Request('GET', $data['vclaimURL'] . '/SEP/FingerPrint/List/Peserta/TglPelayanan/' . $Tglpelayanan, $headers);
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        if ($res->metaData->code != "200") {
+            return $this->respond($res);
+        }
+        $key =  $data['X_cons_id'] . $data['secretKey'] . $data['timestamp'];
+        $hasil = $this->Bpjs->stringDecrypt($key, $res->response);
+        $hasil = $this->Bpjs->decompress($hasil);
+        $res->response = json_decode($hasil);
+        return $this->respond($res);
+    }
     public function getKamar()
     {
         $data = $this->Bpjs->getSingnature();
