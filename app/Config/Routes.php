@@ -18,6 +18,7 @@ $routes->get('/api/bpjs/peserta/jumlahsep', 'Rest::getJumlahSEP');
 $routes->get('/api/bpjs/peserta/listrencanakontrol', 'Rest::ListRencanaKontrol');
 $routes->get('/api/bpjs/peserta/getfinger', 'Rest::getfinger');
 $routes->get('/api/bpjs/peserta/getallfinger', 'Rest::getallfinger');
+$routes->get('/api/bpjs/peserta/sttpulang/bulan', 'Rest::getSttpulang');
 
 
 
