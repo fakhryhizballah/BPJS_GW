@@ -441,6 +441,24 @@ class Rest extends ResourceController
         $res = json_decode($res->getBody()->getContents());
         return $this->respond($res);
     }
+    public function addFarmasi()
+    {
+        $data = $this->Bpjs->getSingnature();
+        $kelas = $this->request->getBody();
+        $kelas = json_decode($kelas);
+        $headers = [
+            'x-cons-id' => $data['X_cons_id'],
+            'x-timestamp' =>  $data['timestamp'],
+            'x-signature' => $data['signature'],
+            'user_key' => $data['user_key'],
+            'Content-Type' => 'application/json'
+        ];
+        $request =  new Request('POST', $data['baseURL'] . '/antrean/farmasi/add', $headers, json_encode($kelas));
+        $res = $this->client->sendAsync($request)->wait();
+        $res = json_decode($res->getBody()->getContents());
+        return $this->respond($res);
+    }
+
     public function getAntrean()
     {
         $data = $this->Bpjs->getSingnature();
@@ -644,7 +662,8 @@ class Rest extends ResourceController
         $res->response = json_decode($hasil);
         return $this->respond($res);
     }
-    public function getSttpulang()
+
+    public function addfarmasi()
     {
         $data = $this->Bpjs->getSingnature();
         $bulan = $this->request->getVar('bulan');
