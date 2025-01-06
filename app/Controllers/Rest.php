@@ -441,7 +441,7 @@ class Rest extends ResourceController
         $res = json_decode($res->getBody()->getContents());
         return $this->respond($res);
     }
-    public function addFarmasi()
+    public function addAntreanFarmasi()
     {
         $data = $this->Bpjs->getSingnature();
         $kelas = $this->request->getBody();

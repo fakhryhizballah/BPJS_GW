@@ -30,7 +30,7 @@ $routes->get('/api/bpjs/refKamar', 'Rest::refKamar');
 
 
 $routes->post('/api/bpjs/antrean/add', 'Rest::addAntrean');
-$routes->post('/api/bpjs/antrean/farmasi/add', 'Rest::addFarmasi');
+$routes->post('/api/bpjs/antrean/farmasi/add', 'Rest::addAntreanFarmasi');
 $routes->get('/api/bpjs/antrean/pendaftaran', 'Rest::getAntrean');
 $routes->post('/api/bpjs/antrean/getlisttask', 'Rest::getlisttask');
 $routes->post('/api/bpjs/antrean/batal', 'Rest::antrean_batal');
