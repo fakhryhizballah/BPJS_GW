@@ -9,6 +9,9 @@ use App\Libraries\Bpjs;
 use App\Libraries\Inacbg;
 use CodeIgniter\I18n\Time;
 
+use App\Libraries\OAuthLibrary;
+use App\Libraries\CryptoLibrary;
+
 
 class Rest extends ResourceController
 {
@@ -734,6 +737,38 @@ class Rest extends ResourceController
             'Content-Type' => 'application/json'
         ];
         return $this->respond($headers);
+    }
+    public function validatePatient()
+    {
+        $param = $this->request->getGet();
+        if (!isset($param['name']) || !isset($param['nik'])) {
+            return $this->respond([
+                'status' => 'error',
+                'message' => 'Invalid parameter'
+            ]);
+        }
+        $client_id = $_ENV["SATUSEHAT.client_id"];
+        $client_secret = $_ENV["SATUSEHAT.client_secret"];
+        $auth_url = $_ENV["SATUSEHAT.auth_url"];
+        $api_url = $_ENV["SATUSEHAT.api_url"];
+        $environment = 'production';
+
+        // Initialize OAuth Library
+        $oauth = new OAuthLibrary();
+        $auth_result = $oauth->authenticateWithOAuth2($client_id, $client_secret, $auth_url);
+
+        if (!$auth_result) {
+            return "Authentication failed!";
+        }
+
+        // Agent details
+        $agent_name = $param['name'];
+        $agent_nik = $param['nik'];
+
+        // Assuming generateUrl exists in another library
+        $json = CryptoLibrary::generateUrl($agent_name, $agent_nik, $auth_result, $api_url, $environment);
+
+        return redirect()->to(json_decode($json, true)['data']['url']);
     }
     public function get_claim_data()
     {

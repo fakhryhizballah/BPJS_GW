@@ -43,6 +43,8 @@ $routes->get('/api/bpjs/antrean/refpoli', 'Rest::getRefPoli');
 $routes->post('/api/bpjs/antrean/decript', 'Rest::decript');
 $routes->get('/api/bpjs/antrean/signatuer', 'Rest::signatuer');
 
+$routes->get('/api/satusehat/validate', 'Rest::validatePatient');
+
 $routes->post('/api/bpjs/icare/validate', 'Rest::icare');
 
 $routes->get('/api/inacbg/get_claim_data', 'Rest::get_claim_data');
